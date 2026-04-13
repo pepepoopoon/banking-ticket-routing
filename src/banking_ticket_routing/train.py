@@ -9,7 +9,7 @@ from pathlib import Path
 import joblib
 
 from .data import load_csv, stratified_split
-from .io import write_json
+from .io import MODEL_SCHEMA_VERSION, validate_bundle, write_json
 from .model import build_model, classification_metrics, select_abstention_threshold
 
 LOGGER = logging.getLogger(__name__)
@@ -42,14 +42,17 @@ def train(
         validation_frame["intent"],
         abstention_threshold=threshold,
     )
-    bundle = {
-        "schema_version": 1,
-        "random_state": random_state,
-        "model": model,
-        "abstention_threshold": threshold,
-        "minimum_validation_coverage": minimum_coverage,
-        "calibration": "sigmoid, 3-fold CV inside train",
-    }
+    bundle = validate_bundle(
+        {
+            "schema_version": MODEL_SCHEMA_VERSION,
+            "random_state": random_state,
+            "model": model,
+            "intent_classes": classes.tolist(),
+            "abstention_threshold": threshold,
+            "minimum_validation_coverage": minimum_coverage,
+            "calibration": "sigmoid, 3-fold CV inside train",
+        }
+    )
     destination = Path(output_dir)
     destination.mkdir(parents=True, exist_ok=True)
     joblib.dump(bundle, destination / "model.joblib")
@@ -57,10 +60,11 @@ def train(
     validation_frame.to_csv(destination / "validation.csv", index=False)
     test_frame.to_csv(destination / "test.csv", index=False)
     metadata = {
-        "schema_version": 1,
+        "schema_version": MODEL_SCHEMA_VERSION,
         "random_state": random_state,
         "split_strategy": "stratified by intent",
         "calibration": bundle["calibration"],
+        "intent_classes": bundle["intent_classes"],
         "minimum_validation_coverage": minimum_coverage,
         "abstention_threshold": threshold,
         "split_rows": {

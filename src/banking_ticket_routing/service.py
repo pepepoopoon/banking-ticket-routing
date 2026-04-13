@@ -7,14 +7,16 @@ from typing import Any
 
 import numpy as np
 
-from .io import load_bundle
+from .io import load_bundle, validate_bundle
 
 
 class RoutingService:
     """Загрузить модель один раз и маршрутизировать отдельные обращения."""
 
     def __init__(self, bundle: dict[str, Any]) -> None:
+        bundle = validate_bundle(bundle)
         self.model = bundle["model"]
+        self.intent_classes = np.asarray(bundle["intent_classes"])
         self.abstention_threshold = float(bundle["abstention_threshold"])
 
     @classmethod
@@ -27,7 +29,7 @@ class RoutingService:
         if top_k < 1:
             raise ValueError("top_k должен быть положительным")
         probabilities = self.model.predict_proba([text])[0]
-        classes = self.model.classes_
+        classes = self.intent_classes
         indices = np.argsort(probabilities)[::-1][: min(top_k, len(classes))]
         candidates = [
             {"intent": str(classes[index]), "probability": float(probabilities[index])}
