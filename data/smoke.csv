@@ -1,0 +1,51 @@
+ticket_id,text,intent
+ticket-001,Where is my new card,card_arrival
+ticket-002,When will the replacement card arrive,card_arrival
+ticket-003,My physical card has not arrived yet,card_arrival
+ticket-004,How long does card delivery take,card_arrival
+ticket-005,Can I track the card shipment,card_arrival
+ticket-006,The card delivery is late,card_arrival
+ticket-007,I am waiting for my bank card,card_arrival
+ticket-008,What is the status of my card delivery,card_arrival
+ticket-009,Has my new card been shipped,card_arrival
+ticket-010,Tell me the expected card arrival date,card_arrival
+ticket-011,How can I withdraw cash,cash_withdrawal
+ticket-012,Where can I take money from an ATM,cash_withdrawal
+ticket-013,I need to make a cash withdrawal,cash_withdrawal
+ticket-014,Which cash machines can I use,cash_withdrawal
+ticket-015,Can I withdraw money abroad,cash_withdrawal
+ticket-016,Help me get cash from my account,cash_withdrawal
+ticket-017,What is the daily cash withdrawal process,cash_withdrawal
+ticket-018,I want to use an ATM for cash,cash_withdrawal
+ticket-019,Where do I find a supported cash machine,cash_withdrawal
+ticket-020,Explain how ATM withdrawals work,cash_withdrawal
+ticket-021,My bank transfer is still pending,transfer_pending
+ticket-022,Why has the transfer not completed,transfer_pending
+ticket-023,The recipient is waiting for my transfer,transfer_pending
+ticket-024,How long can a pending transfer take,transfer_pending
+ticket-025,My money transfer is stuck,transfer_pending
+ticket-026,The transfer status has not changed,transfer_pending
+ticket-027,When will my pending payment transfer finish,transfer_pending
+ticket-028,Please check the delayed bank transfer,transfer_pending
+ticket-029,A transfer is showing as pending,transfer_pending
+ticket-030,Why is my outgoing transfer delayed,transfer_pending
+ticket-031,My balance did not update after a bank transfer,balance_not_updated_after_bank_transfer
+ticket-032,The incoming transfer is missing from my balance,balance_not_updated_after_bank_transfer
+ticket-033,Why is transferred money not in my account balance,balance_not_updated_after_bank_transfer
+ticket-034,My account total stayed the same after the transfer,balance_not_updated_after_bank_transfer
+ticket-035,The bank transfer arrived but balance is unchanged,balance_not_updated_after_bank_transfer
+ticket-036,Please refresh my balance after the incoming transfer,balance_not_updated_after_bank_transfer
+ticket-037,Transferred funds are absent from the displayed balance,balance_not_updated_after_bank_transfer
+ticket-038,My balance has not increased after a transfer,balance_not_updated_after_bank_transfer
+ticket-039,I received a transfer but cannot see it in the balance,balance_not_updated_after_bank_transfer
+ticket-040,Account balance is wrong following a bank transfer,balance_not_updated_after_bank_transfer
+ticket-041,The exchange rate on my card purchase is wrong,card_payment_wrong_exchange_rate
+ticket-042,Why was my foreign card payment converted incorrectly,card_payment_wrong_exchange_rate
+ticket-043,I got a bad exchange rate for a card transaction,card_payment_wrong_exchange_rate
+ticket-044,Check the currency conversion on my card purchase,card_payment_wrong_exchange_rate
+ticket-045,The card payment used an unexpected conversion rate,card_payment_wrong_exchange_rate
+ticket-046,Foreign purchase exchange amount looks incorrect,card_payment_wrong_exchange_rate
+ticket-047,My card transaction has the wrong currency rate,card_payment_wrong_exchange_rate
+ticket-048,Explain this poor card payment exchange rate,card_payment_wrong_exchange_rate
+ticket-049,The conversion for my overseas card purchase is wrong,card_payment_wrong_exchange_rate
+ticket-050,I was charged the wrong exchange rate by card,card_payment_wrong_exchange_rate
