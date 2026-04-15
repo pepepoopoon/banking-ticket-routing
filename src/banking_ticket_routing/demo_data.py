@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import random
 from pathlib import Path
 
 import pandas as pd
@@ -70,12 +71,46 @@ EXAMPLES = {
     ],
 }
 
+PREFIXES = (
+    "Please help",
+    "I need assistance",
+    "Could you explain",
+    "I have a question",
+    "Please check",
+    "Can support clarify",
+    "I am contacting support because",
+    "Could someone investigate",
+)
 
-def make_smoke_data() -> pd.DataFrame:
+SUFFIXES = (
+    "today",
+    "in the mobile app",
+    "for my account",
+    "before my next payment",
+    "as soon as possible",
+    "while I am travelling",
+    "after the latest update",
+    "from yesterday",
+)
+
+
+def make_smoke_data(*, samples_per_intent: int = 10, random_state: int = 42) -> pd.DataFrame:
+    if samples_per_intent < 8:
+        raise ValueError("Для split и калибровки нужно минимум 8 строк на intent")
+    rng = random.Random(random_state)
     rows: list[dict[str, str]] = []
     ticket_number = 1
     for intent, texts in EXAMPLES.items():
-        for text in texts:
+        candidates = list(texts)
+        augmented = [
+            f"{prefix}: {text.lower()} {suffix}"
+            for text in texts
+            for prefix in PREFIXES
+            for suffix in SUFFIXES
+        ]
+        rng.shuffle(augmented)
+        candidates.extend(augmented)
+        for text in candidates[:samples_per_intent]:
             rows.append(
                 {
                     "ticket_id": f"ticket-{ticket_number:03d}",
@@ -90,10 +125,15 @@ def make_smoke_data() -> pd.DataFrame:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--samples-per-intent", type=int, default=10)
+    parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
     destination = Path(args.output)
     destination.parent.mkdir(parents=True, exist_ok=True)
-    make_smoke_data().to_csv(destination, index=False)
+    make_smoke_data(
+        samples_per_intent=args.samples_per_intent,
+        random_state=args.seed,
+    ).to_csv(destination, index=False)
 
 
 if __name__ == "__main__":

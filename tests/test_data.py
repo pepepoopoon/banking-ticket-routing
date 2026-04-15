@@ -23,3 +23,15 @@ def test_stratified_split_is_disjoint_and_deterministic() -> None:
     assert set(validation["ticket_id"]).isdisjoint(test["ticket_id"])
     assert all(part["intent"].nunique() == 5 for part in (train, validation, test))
     pd.testing.assert_frame_equal(manifest, second[3])
+
+
+def test_synthetic_generator_scales_and_uses_seed() -> None:
+    first = make_smoke_data(samples_per_intent=18, random_state=7)
+    repeated = make_smoke_data(samples_per_intent=18, random_state=7)
+    changed = make_smoke_data(samples_per_intent=18, random_state=8)
+
+    assert len(first) == 90
+    assert first["intent"].value_counts().eq(18).all()
+    assert first["ticket_id"].is_unique
+    pd.testing.assert_frame_equal(first, repeated)
+    assert not first.equals(changed)

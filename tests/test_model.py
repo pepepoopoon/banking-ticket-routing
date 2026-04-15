@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from banking_ticket_routing.model import select_abstention_threshold, top_k_accuracy
+from banking_ticket_routing.model import build_model, select_abstention_threshold, top_k_accuracy
 
 
 def test_abstention_threshold_respects_minimum_coverage() -> None:
@@ -24,3 +24,33 @@ def test_top_k_accuracy_rejects_k_outside_class_count(invalid_k: int) -> None:
 
     with pytest.raises(ValueError, match=r"k должен быть в диапазоне \[1, 2\]"):
         top_k_accuracy(labels, probabilities, classes, k=invalid_k)
+
+
+@pytest.mark.parametrize("feature_mode", ["word", "char", "union"])
+def test_model_supports_feature_ablation(feature_mode: str) -> None:
+    model = build_model(
+        feature_mode=feature_mode,
+        regularization_c=0.5,
+        calibration_method="isotonic",
+        calibration_cv=2,
+    )
+
+    assert model.method == "isotonic"
+    assert model.cv == 2
+    assert model.estimator.named_steps["classifier"].C == 0.5
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "message"),
+    [
+        ({"regularization_c": 0}, "положительным"),
+        ({"feature_mode": "invalid"}, "word, char или union"),
+        ({"word_ngram_max": 0}, "не меньше 1"),
+        ({"char_ngram_max": 2}, "не меньше 3"),
+        ({"calibration_method": "invalid"}, "sigmoid или isotonic"),
+        ({"calibration_cv": 1}, "не меньше 2"),
+    ],
+)
+def test_model_rejects_invalid_configuration(kwargs: dict, message: str) -> None:
+    with pytest.raises(ValueError, match=message):
+        build_model(**kwargs)

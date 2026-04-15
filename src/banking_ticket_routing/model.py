@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 import numpy as np
 from sklearn.calibration import CalibratedClassifierCV
@@ -12,36 +12,68 @@ from sklearn.metrics import f1_score, log_loss
 from sklearn.pipeline import FeatureUnion, Pipeline
 
 
-def build_model(*, random_state: int = 42) -> CalibratedClassifierCV:
-    features = FeatureUnion(
-        [
-            (
-                "word",
-                TfidfVectorizer(
-                    analyzer="word",
-                    ngram_range=(1, 2),
-                    min_df=1,
-                    sublinear_tf=True,
-                ),
-            ),
-            (
-                "char",
-                TfidfVectorizer(
-                    analyzer="char_wb",
-                    ngram_range=(3, 5),
-                    min_df=1,
-                    sublinear_tf=True,
-                ),
-            ),
-        ]
+FeatureMode = Literal["word", "char", "union"]
+CalibrationMethod = Literal["sigmoid", "isotonic"]
+
+
+def build_model(
+    *,
+    random_state: int = 42,
+    regularization_c: float = 1.0,
+    feature_mode: FeatureMode = "union",
+    word_ngram_max: int = 2,
+    char_ngram_max: int = 5,
+    calibration_method: CalibrationMethod = "sigmoid",
+    calibration_cv: int = 3,
+) -> CalibratedClassifierCV:
+    if regularization_c <= 0:
+        raise ValueError("regularization_c должен быть положительным")
+    if feature_mode not in {"word", "char", "union"}:
+        raise ValueError("feature_mode должен быть word, char или union")
+    if word_ngram_max < 1:
+        raise ValueError("word_ngram_max должен быть не меньше 1")
+    if char_ngram_max < 3:
+        raise ValueError("char_ngram_max должен быть не меньше 3")
+    if calibration_method not in {"sigmoid", "isotonic"}:
+        raise ValueError("calibration_method должен быть sigmoid или isotonic")
+    if calibration_cv < 2:
+        raise ValueError("calibration_cv должен быть не меньше 2")
+
+    word_features = TfidfVectorizer(
+        analyzer="word",
+        ngram_range=(1, word_ngram_max),
+        min_df=1,
+        sublinear_tf=True,
     )
+    char_features = TfidfVectorizer(
+        analyzer="char_wb",
+        ngram_range=(3, char_ngram_max),
+        min_df=1,
+        sublinear_tf=True,
+    )
+    if feature_mode == "word":
+        features: TfidfVectorizer | FeatureUnion = word_features
+    elif feature_mode == "char":
+        features = char_features
+    else:
+        features = FeatureUnion(
+            [
+                ("word", word_features),
+                ("char", char_features),
+            ]
+        )
     estimator = LogisticRegression(
         class_weight="balanced",
+        C=regularization_c,
         max_iter=1_000,
         random_state=random_state,
     )
     base_pipeline = Pipeline([("features", features), ("classifier", estimator)])
-    return CalibratedClassifierCV(estimator=base_pipeline, method="sigmoid", cv=3)
+    return CalibratedClassifierCV(
+        estimator=base_pipeline,
+        method=calibration_method,
+        cv=calibration_cv,
+    )
 
 
 def top_k_accuracy(
