@@ -9,9 +9,7 @@ def test_abstention_threshold_respects_minimum_coverage() -> None:
     labels = np.asarray(["a", "a", "b", "b"])
     probabilities = np.asarray([[0.9, 0.1], [0.6, 0.4], [0.2, 0.8], [0.55, 0.45]])
 
-    threshold = select_abstention_threshold(
-        labels, probabilities, classes, minimum_coverage=0.5
-    )
+    threshold = select_abstention_threshold(labels, probabilities, classes, minimum_coverage=0.5)
     coverage = float((probabilities.max(axis=1) >= threshold).mean())
 
     assert 0.0 <= threshold <= 1.0
