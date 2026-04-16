@@ -81,8 +81,9 @@ BANKING_MODEL_PATH=artifacts/smoke/model.joblib \
 
 ## Метрики
 
-Сохраняются macro-F1, top-3 accuracy, multiclass log-loss, coverage, abstention rate и
-selective accuracy на принятых ответах. Порог выбирается только по validation.
+Сохраняются macro-F1, top-3 accuracy, multiclass log-loss и Brier score, ECE,
+confusion matrix, per-intent метрики, coverage, abstention rate и selective accuracy
+на принятых ответах. Порог выбирается только по validation.
 
 ## Тестирование
 

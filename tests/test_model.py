@@ -1,7 +1,12 @@
 import numpy as np
 import pytest
 
-from banking_ticket_routing.model import build_model, select_abstention_threshold, top_k_accuracy
+from banking_ticket_routing.model import (
+    build_model,
+    calibration_diagnostics,
+    select_abstention_threshold,
+    top_k_accuracy,
+)
 
 
 def test_abstention_threshold_respects_minimum_coverage() -> None:
@@ -54,3 +59,24 @@ def test_model_supports_feature_ablation(feature_mode: str) -> None:
 def test_model_rejects_invalid_configuration(kwargs: dict, message: str) -> None:
     with pytest.raises(ValueError, match=message):
         build_model(**kwargs)
+
+
+def test_calibration_diagnostics_match_known_probabilities() -> None:
+    classes = np.asarray(["a", "b"])
+    labels = np.asarray(["a", "b"])
+    probabilities = np.asarray([[0.8, 0.2], [0.4, 0.6]])
+
+    diagnostics = calibration_diagnostics(labels, probabilities, classes, n_bins=5)
+
+    assert diagnostics["multiclass_brier_score"] == pytest.approx(0.2)
+    assert diagnostics["expected_calibration_error"] == pytest.approx(0.3)
+    assert sum(item["count"] for item in diagnostics["bins"]) == 2
+
+
+def test_calibration_diagnostics_reject_unknown_label() -> None:
+    with pytest.raises(ValueError, match="Неизвестная истинная метка"):
+        calibration_diagnostics(
+            np.asarray(["unknown"]),
+            np.asarray([[0.5, 0.5]]),
+            np.asarray(["a", "b"]),
+        )
