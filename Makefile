@@ -1,4 +1,4 @@
-.PHONY: install install-api lint test smoke train evaluate predict serve
+.PHONY: install install-api lint test smoke train evaluate predict experiment serve
 
 install:
 	python -m pip install -e ".[dev]"
@@ -23,6 +23,9 @@ evaluate:
 
 predict:
 	banking-predict --model artifacts/smoke/model.joblib --text "Where is my new card?"
+
+experiment:
+	banking-experiment --output experiments/results/example.json --hypothesis "Проверить сценарий"
 
 serve:
 	BANKING_MODEL_PATH=artifacts/smoke/model.joblib uvicorn banking_ticket_routing.api:create_app --factory

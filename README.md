@@ -72,6 +72,12 @@ banking-evaluate --model artifacts/smoke/model.joblib \
 banking-predict --model artifacts/smoke/model.joblib --text "Where is my new card?" --top-k 3
 ```
 
+## Инженерные эксперименты
+
+`make experiment` обучает модель на отдельной синтетической выборке, выбирает порог
+только по validation и сохраняет параметры, размерность TF-IDF, калибровочные метрики,
+per-intent качество и test-результат в JSON.
+
 Опциональный HTTP-слой после установки extra:
 
 ```bash
@@ -95,6 +101,8 @@ confusion matrix, per-intent метрики, coverage, abstention rate и select
 Уверенность не является гарантией корректности, а калибровка может деградировать при
 дрейфе. Abstention означает ручную очередь, не отказ клиенту. Модель не принимает
 финансовых решений и требует мониторинга качества по каждому intent.
+Для контролируемой проверки устойчивости доступны дисбаланс одного intent, шум train-меток
+и детерминированные опечатки только на validation/test.
 
 ## Полученные результаты
 

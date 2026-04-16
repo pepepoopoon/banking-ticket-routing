@@ -24,6 +24,7 @@ banking-generate-smoke = "banking_ticket_routing.demo_data:main"
 banking-train = "banking_ticket_routing.train:main"
 banking-evaluate = "banking_ticket_routing.evaluate:main"
 banking-predict = "banking_ticket_routing.predict:main"
+banking-experiment = "banking_ticket_routing.experiment:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/banking_ticket_routing"]
