@@ -168,6 +168,38 @@ def calibration_diagnostics(
     }
 
 
+def per_intent_routing_diagnostics(
+    y_true: np.ndarray,
+    probabilities: np.ndarray,
+    classes: np.ndarray,
+    *,
+    abstention_threshold: float,
+) -> dict[str, dict[str, float | int | None]]:
+    """Показать покрытие и точность принятой очереди отдельно для каждого intent."""
+    confidences = probabilities.max(axis=1)
+    predictions = classes[probabilities.argmax(axis=1)]
+    accepted = confidences >= abstention_threshold
+    diagnostics: dict[str, dict[str, float | int | None]] = {}
+    for label in classes:
+        selected = y_true == label
+        selected_accepted = selected & accepted
+        rows = int(selected.sum())
+        accepted_rows = int(selected_accepted.sum())
+        diagnostics[str(label)] = {
+            "rows": rows,
+            "accepted_rows": accepted_rows,
+            "coverage": float(accepted_rows / rows) if rows else 0.0,
+            "accuracy": float(np.mean(predictions[selected] == y_true[selected])) if rows else None,
+            "selective_accuracy": (
+                float(np.mean(predictions[selected_accepted] == y_true[selected_accepted]))
+                if accepted_rows
+                else None
+            ),
+            "mean_confidence": float(confidences[selected].mean()) if rows else None,
+        }
+    return diagnostics
+
+
 def classification_metrics(
     model: CalibratedClassifierCV,
     texts: Any,
@@ -206,5 +238,11 @@ def classification_metrics(
         "calibration": diagnostics,
         "confusion_matrix": confusion_matrix(y_true, predictions, labels=classes).tolist(),
         "per_class": {str(label): report[str(label)] for label in classes},
+        "per_intent_routing": per_intent_routing_diagnostics(
+            y_true,
+            probabilities,
+            classes,
+            abstention_threshold=abstention_threshold,
+        ),
         "labels": [str(label) for label in classes],
     }

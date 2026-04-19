@@ -77,6 +77,8 @@ banking-predict --model artifacts/smoke/model.joblib --text "Where is my new car
 `make experiment` обучает модель на отдельной синтетической выборке, выбирает порог
 только по validation и сохраняет параметры, размерность TF-IDF, калибровочные метрики,
 per-intent качество и test-результат в JSON.
+Опция `--baseline` добавляет дельты качества, калибровки, покрытия, порога и числа
+признаков относительно ранее сохранённого запуска.
 
 Опциональный HTTP-слой после установки extra:
 
@@ -90,6 +92,8 @@ BANKING_MODEL_PATH=artifacts/smoke/model.joblib \
 Сохраняются macro-F1, top-3 accuracy, multiclass log-loss и Brier score, ECE,
 confusion matrix, per-intent метрики, coverage, abstention rate и selective accuracy
 на принятых ответах. Порог выбирается только по validation.
+Отдельная per-intent диагностика показывает число принятых обращений, покрытие,
+обычную и selective accuracy и среднюю уверенность для каждой очереди.
 
 ## Тестирование
 

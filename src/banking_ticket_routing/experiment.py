@@ -40,6 +40,7 @@ def run_experiment(
     intent_keep_fraction: float = 1.0,
     label_noise_rate: float = 0.0,
     text_noise_rate: float = 0.0,
+    baseline: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if not hypothesis.strip():
         raise ValueError("hypothesis не может быть пустой")
@@ -105,7 +106,7 @@ def run_experiment(
         test["intent"],
         abstention_threshold=threshold,
     )
-    return {
+    result: dict[str, Any] = {
         "schema_version": 1,
         "experiment": "synthetic_banking_ticket_sensitivity",
         "hypothesis": hypothesis.strip(),
@@ -146,6 +147,35 @@ def run_experiment(
         "validation": validation_metrics,
         "test": test_metrics,
     }
+    if baseline is not None:
+        baseline_test = baseline.get("test")
+        baseline_dataset = baseline.get("dataset")
+        if not isinstance(baseline_test, dict) or not isinstance(baseline_dataset, dict):
+            raise ValueError("baseline не соответствует схеме эксперимента")
+        baseline_calibration = baseline_test.get("calibration")
+        if not isinstance(baseline_calibration, dict):
+            raise ValueError("В baseline отсутствует диагностика калибровки")
+        result["comparison"] = {
+            "test_macro_f1_delta": test_metrics["macro_f1"] - baseline_test["macro_f1"],
+            "test_top_3_accuracy_delta": (
+                test_metrics["top_3_accuracy"] - baseline_test["top_3_accuracy"]
+            ),
+            "test_log_loss_delta": test_metrics["log_loss"] - baseline_test["log_loss"],
+            "test_coverage_delta": test_metrics["coverage"] - baseline_test["coverage"],
+            "test_brier_score_delta": (
+                test_metrics["calibration"]["multiclass_brier_score"]
+                - baseline_calibration["multiclass_brier_score"]
+            ),
+            "test_ece_delta": (
+                test_metrics["calibration"]["expected_calibration_error"]
+                - baseline_calibration["expected_calibration_error"]
+            ),
+            "threshold_delta": (
+                test_metrics["abstention_threshold"] - baseline_test["abstention_threshold"]
+            ),
+            "feature_count_delta": _feature_count(model) - int(baseline_dataset["feature_count"]),
+        }
+    return result
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -175,8 +205,9 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--text-noise-rate", type=float, default=0.0)
     parser.add_argument("--baseline", type=Path)
     args = parser.parse_args(argv)
+    baseline = None
     if args.baseline is not None:
-        raise ValueError("Сравнение с baseline будет добавлено отдельной итерацией")
+        baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
     result = run_experiment(
         hypothesis=args.hypothesis,
         samples_per_intent=args.samples_per_intent,
@@ -196,6 +227,7 @@ def main(argv: list[str] | None = None) -> None:
         intent_keep_fraction=args.intent_keep_fraction,
         label_noise_rate=args.label_noise_rate,
         text_noise_rate=args.text_noise_rate,
+        baseline=baseline,
     )
     write_json(args.output, result)
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))

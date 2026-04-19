@@ -4,6 +4,7 @@ import pytest
 from banking_ticket_routing.model import (
     build_model,
     calibration_diagnostics,
+    per_intent_routing_diagnostics,
     select_abstention_threshold,
     top_k_accuracy,
 )
@@ -80,3 +81,23 @@ def test_calibration_diagnostics_reject_unknown_label() -> None:
             np.asarray([[0.5, 0.5]]),
             np.asarray(["a", "b"]),
         )
+
+
+def test_per_intent_diagnostics_expose_coverage_gap() -> None:
+    classes = np.asarray(["a", "b"])
+    labels = np.asarray(["a", "a", "b", "b"])
+    probabilities = np.asarray(
+        [[0.9, 0.1], [0.55, 0.45], [0.2, 0.8], [0.4, 0.6]]
+    )
+
+    diagnostics = per_intent_routing_diagnostics(
+        labels,
+        probabilities,
+        classes,
+        abstention_threshold=0.7,
+    )
+
+    assert diagnostics["a"]["coverage"] == pytest.approx(0.5)
+    assert diagnostics["b"]["coverage"] == pytest.approx(0.5)
+    assert diagnostics["a"]["selective_accuracy"] == 1.0
+    assert diagnostics["b"]["accepted_rows"] == 1
