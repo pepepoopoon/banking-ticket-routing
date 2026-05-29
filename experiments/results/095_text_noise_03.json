@@ -1,0 +1,409 @@
+{
+  "comparison": {
+    "feature_count_delta": 220,
+    "test_brier_score_delta": -0.0620085938828262,
+    "test_coverage_delta": 0.16666666666666674,
+    "test_ece_delta": -0.1268252996332565,
+    "test_log_loss_delta": -0.09459933188529013,
+    "test_macro_f1_delta": -0.03356643356643352,
+    "test_top_3_accuracy_delta": 0.0,
+    "threshold_delta": 0.05007359760922314
+  },
+  "dataset": {
+    "class_counts": {
+      "balance_not_updated_after_bank_transfer": 30,
+      "card_arrival": 30,
+      "card_payment_wrong_exchange_rate": 30,
+      "cash_withdrawal": 30,
+      "transfer_pending": 30
+    },
+    "feature_count": 1847,
+    "mode": "synthetic",
+    "noisy_evaluation_tokens": 222,
+    "noisy_train_labels": 0,
+    "rows": 150,
+    "split_rows": {
+      "test": 30,
+      "train": 90,
+      "validation": 30
+    }
+  },
+  "experiment": "synthetic_banking_ticket_sensitivity",
+  "hypothesis": "Оценена маршрутизация при 30% токенных опечаток",
+  "parameters": {
+    "calibration_cv": 3,
+    "calibration_method": "sigmoid",
+    "char_ngram_max": 5,
+    "data_seed": 42,
+    "feature_mode": "union",
+    "imbalanced_intent": "transfer_pending",
+    "intent_keep_fraction": 1.0,
+    "label_noise_rate": 0.0,
+    "minimum_coverage": 0.6,
+    "model_seed": 42,
+    "regularization_c": 1.0,
+    "samples_per_intent": 30,
+    "split_seed": 42,
+    "test_fraction": 0.2,
+    "text_noise_rate": 0.3,
+    "validation_fraction": 0.2,
+    "word_ngram_max": 2
+  },
+  "schema_version": 1,
+  "test": {
+    "abstention_rate": 0.23333333333333328,
+    "abstention_threshold": 0.6415494328200337,
+    "calibration": {
+      "bins": [
+        {
+          "accuracy": 1.0,
+          "count": 1,
+          "lower": 0.4,
+          "mean_confidence": 0.49628973076133504,
+          "upper": 0.5
+        },
+        {
+          "accuracy": 0.8,
+          "count": 5,
+          "lower": 0.5,
+          "mean_confidence": 0.5543061012226322,
+          "upper": 0.6
+        },
+        {
+          "accuracy": 1.0,
+          "count": 6,
+          "lower": 0.6,
+          "mean_confidence": 0.6778268827326328,
+          "upper": 0.7
+        },
+        {
+          "accuracy": 1.0,
+          "count": 12,
+          "lower": 0.7,
+          "mean_confidence": 0.756526833109267,
+          "upper": 0.8
+        },
+        {
+          "accuracy": 1.0,
+          "count": 6,
+          "lower": 0.8,
+          "mean_confidence": 0.8271277721414951,
+          "upper": 0.9
+        }
+      ],
+      "expected_calibration_error": 0.2541376612189844,
+      "mean_confidence": 0.7125290054476824,
+      "multiclass_brier_score": 0.15592497010689674
+    },
+    "confusion_matrix": [
+      [
+        6,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        6,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        6,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        6,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        5
+      ]
+    ],
+    "coverage": 0.7666666666666667,
+    "labels": [
+      "balance_not_updated_after_bank_transfer",
+      "card_arrival",
+      "card_payment_wrong_exchange_rate",
+      "cash_withdrawal",
+      "transfer_pending"
+    ],
+    "log_loss": 0.40302230444579795,
+    "macro_f1": 0.9664335664335665,
+    "per_class": {
+      "balance_not_updated_after_bank_transfer": {
+        "f1-score": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 6.0
+      },
+      "card_arrival": {
+        "f1-score": 0.9230769230769231,
+        "precision": 0.8571428571428571,
+        "recall": 1.0,
+        "support": 6.0
+      },
+      "card_payment_wrong_exchange_rate": {
+        "f1-score": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 6.0
+      },
+      "cash_withdrawal": {
+        "f1-score": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 6.0
+      },
+      "transfer_pending": {
+        "f1-score": 0.9090909090909091,
+        "precision": 1.0,
+        "recall": 0.8333333333333334,
+        "support": 6.0
+      }
+    },
+    "per_intent_routing": {
+      "balance_not_updated_after_bank_transfer": {
+        "accepted_rows": 5,
+        "accuracy": 1.0,
+        "coverage": 0.8333333333333334,
+        "mean_confidence": 0.7252423848288592,
+        "rows": 6,
+        "selective_accuracy": 1.0
+      },
+      "card_arrival": {
+        "accepted_rows": 5,
+        "accuracy": 1.0,
+        "coverage": 0.8333333333333334,
+        "mean_confidence": 0.7472730402244173,
+        "rows": 6,
+        "selective_accuracy": 1.0
+      },
+      "card_payment_wrong_exchange_rate": {
+        "accepted_rows": 5,
+        "accuracy": 1.0,
+        "coverage": 0.8333333333333334,
+        "mean_confidence": 0.7118602654320453,
+        "rows": 6,
+        "selective_accuracy": 1.0
+      },
+      "cash_withdrawal": {
+        "accepted_rows": 5,
+        "accuracy": 1.0,
+        "coverage": 0.8333333333333334,
+        "mean_confidence": 0.6975383626502261,
+        "rows": 6,
+        "selective_accuracy": 1.0
+      },
+      "transfer_pending": {
+        "accepted_rows": 3,
+        "accuracy": 0.8333333333333334,
+        "coverage": 0.5,
+        "mean_confidence": 0.6807309741028637,
+        "rows": 6,
+        "selective_accuracy": 1.0
+      }
+    },
+    "rows": 30,
+    "selective_accuracy": 1.0,
+    "selective_risk": 0.0,
+    "top_3_accuracy": 1.0
+  },
+  "validation": {
+    "abstention_rate": 0.4,
+    "abstention_threshold": 0.6415494328200337,
+    "calibration": {
+      "bins": [
+        {
+          "accuracy": 0.5,
+          "count": 2,
+          "lower": 0.3,
+          "mean_confidence": 0.37949516648405013,
+          "upper": 0.4
+        },
+        {
+          "accuracy": 0.6666666666666666,
+          "count": 3,
+          "lower": 0.4,
+          "mean_confidence": 0.42606932463016706,
+          "upper": 0.5
+        },
+        {
+          "accuracy": 1.0,
+          "count": 2,
+          "lower": 0.5,
+          "mean_confidence": 0.5372909011072822,
+          "upper": 0.6
+        },
+        {
+          "accuracy": 1.0,
+          "count": 10,
+          "lower": 0.6,
+          "mean_confidence": 0.6439593186887007,
+          "upper": 0.7
+        },
+        {
+          "accuracy": 1.0,
+          "count": 3,
+          "lower": 0.7,
+          "mean_confidence": 0.753651283840871,
+          "upper": 0.8
+        },
+        {
+          "accuracy": 1.0,
+          "count": 9,
+          "lower": 0.8,
+          "mean_confidence": 0.8503176309517377,
+          "upper": 0.9
+        },
+        {
+          "accuracy": 1.0,
+          "count": 1,
+          "lower": 0.9,
+          "mean_confidence": 0.9049153492559222,
+          "upper": 1.0
+        }
+      ],
+      "expected_calibration_error": 0.2543299608231884,
+      "mean_confidence": 0.679003372510145,
+      "multiclass_brier_score": 0.18088256435126676
+    },
+    "confusion_matrix": [
+      [
+        5,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        6,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        5,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        6,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        6
+      ]
+    ],
+    "coverage": 0.6,
+    "labels": [
+      "balance_not_updated_after_bank_transfer",
+      "card_arrival",
+      "card_payment_wrong_exchange_rate",
+      "cash_withdrawal",
+      "transfer_pending"
+    ],
+    "log_loss": 0.4243573255858158,
+    "macro_f1": 0.9328671328671329,
+    "per_class": {
+      "balance_not_updated_after_bank_transfer": {
+        "f1-score": 0.9090909090909091,
+        "precision": 1.0,
+        "recall": 0.8333333333333334,
+        "support": 6.0
+      },
+      "card_arrival": {
+        "f1-score": 0.9230769230769231,
+        "precision": 0.8571428571428571,
+        "recall": 1.0,
+        "support": 6.0
+      },
+      "card_payment_wrong_exchange_rate": {
+        "f1-score": 0.9090909090909091,
+        "precision": 1.0,
+        "recall": 0.8333333333333334,
+        "support": 6.0
+      },
+      "cash_withdrawal": {
+        "f1-score": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "support": 6.0
+      },
+      "transfer_pending": {
+        "f1-score": 0.9230769230769231,
+        "precision": 0.8571428571428571,
+        "recall": 1.0,
+        "support": 6.0
+      }
+    },
+    "per_intent_routing": {
+      "balance_not_updated_after_bank_transfer": {
+        "accepted_rows": 3,
+        "accuracy": 0.8333333333333334,
+        "coverage": 0.5,
+        "mean_confidence": 0.6274357235686142,
+        "rows": 6,
+        "selective_accuracy": 1.0
+      },
+      "card_arrival": {
+        "accepted_rows": 5,
+        "accuracy": 1.0,
+        "coverage": 0.8333333333333334,
+        "mean_confidence": 0.7708781689108907,
+        "rows": 6,
+        "selective_accuracy": 1.0
+      },
+      "card_payment_wrong_exchange_rate": {
+        "accepted_rows": 4,
+        "accuracy": 0.8333333333333334,
+        "coverage": 0.6666666666666666,
+        "mean_confidence": 0.7236027171951166,
+        "rows": 6,
+        "selective_accuracy": 1.0
+      },
+      "cash_withdrawal": {
+        "accepted_rows": 2,
+        "accuracy": 1.0,
+        "coverage": 0.3333333333333333,
+        "mean_confidence": 0.6616015985470715,
+        "rows": 6,
+        "selective_accuracy": 1.0
+      },
+      "transfer_pending": {
+        "accepted_rows": 4,
+        "accuracy": 1.0,
+        "coverage": 0.6666666666666666,
+        "mean_confidence": 0.6114986543290317,
+        "rows": 6,
+        "selective_accuracy": 1.0
+      }
+    },
+    "rows": 30,
+    "selective_accuracy": 1.0,
+    "selective_risk": 0.0,
+    "top_3_accuracy": 1.0
+  }
+}
