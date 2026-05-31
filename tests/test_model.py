@@ -86,9 +86,7 @@ def test_calibration_diagnostics_reject_unknown_label() -> None:
 def test_per_intent_diagnostics_expose_coverage_gap() -> None:
     classes = np.asarray(["a", "b"])
     labels = np.asarray(["a", "a", "b", "b"])
-    probabilities = np.asarray(
-        [[0.9, 0.1], [0.55, 0.45], [0.2, 0.8], [0.4, 0.6]]
-    )
+    probabilities = np.asarray([[0.9, 0.1], [0.55, 0.45], [0.2, 0.8], [0.4, 0.6]])
 
     diagnostics = per_intent_routing_diagnostics(
         labels,
